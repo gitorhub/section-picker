@@ -26,6 +26,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     sendResponse({ ok: true }); return true;
   }
   if (msg.type === "PICKER_STOPPED") { sendResponse({ ok: true }); return true; }
+  if (msg.type === "CAPTURE_SCREENSHOT") {
+    chrome.tabs.captureVisibleTab(sender.tab.windowId, { format: "jpeg", quality: 88 }, (dataUrl) => {
+      if (chrome.runtime.lastError) { sendResponse({ error: chrome.runtime.lastError.message }); }
+      else { sendResponse({ dataUrl }); }
+    });
+    return true;
+  }
 });
 
 // Icon click → inject picker directly
